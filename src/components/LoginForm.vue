@@ -9,11 +9,12 @@
 
 <script>
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../firebase/init.js'
+import { auth, db } from '../firebase/init.js'
 import { doc, getDoc } from 'firebase/firestore'
-import db from '../firebase/init.js'
+import { useUserStore } from '../stores/userStore'
 
 export default {
+    name: "Login",
     data() {
         return {
             email: '',
@@ -22,6 +23,7 @@ export default {
     },
     methods: {
         async login() {
+            const userStore = useUserStore();
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, this.email, this.password);
 
@@ -33,10 +35,16 @@ export default {
 
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
-                    const username = userData.username;
+                    // const username = userData.username;
 
                     // Update the displayName in Auth
-                    await updateProfile(user, { displayName: username });
+                    // await updateProfile(user, { displayName: username });
+
+                    userStore.setUser({
+                        userName: userData.username,
+                        userId: user.uid,
+                        role: userData.role
+                    });
 
                     // Emit loggedIn event or handle successful login
                     this.$emit('loggedIn');
