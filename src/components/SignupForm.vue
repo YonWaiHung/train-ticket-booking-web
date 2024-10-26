@@ -16,9 +16,9 @@
 
 <script>
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import { auth } from '../firebase/init.js'
+import { auth, db } from '../firebase/init.js'
 import { doc, setDoc } from 'firebase/firestore'
-import db from '../firebase/init.js'
+import { useUserStore } from '../stores/userStore'
 
 export default {
     data() {
@@ -31,6 +31,7 @@ export default {
     },
     methods: {
         async signUp() {
+            const userStore = useUserStore();
             try {
                 // Register user
                 const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
@@ -39,13 +40,19 @@ export default {
                 const user = userCredential.user;
 
                 // Update 'displayName'
-                await updateProfile(user, { displayName: this.username });
+                // await updateProfile(user, { displayName: this.username });
 
                 // Store the username in Firestore
                 await setDoc(doc(db, 'users', user.uid), {
                     username: this.username,
                     email: this.email,
                     role: this.role,
+                });
+
+                userStore.setUser({
+                    userName: this.username,
+                    userId: user.uid,
+                    role: this.role
                 });
 
                 // Emit event
