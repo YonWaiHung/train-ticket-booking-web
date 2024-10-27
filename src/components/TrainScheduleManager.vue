@@ -80,8 +80,8 @@ export default {
         const schedules = computed(() => trainStore.schedules);
 
         const submitSchedule = async () => {
-            const numCoaches = 6; // Example: 6 coaches
-            const seatsPerCoach = 20; // Example: 20 seats per coach
+            const numCoaches = 6;
+            const seatsPerCoach = 20;
 
             // Generate default coaches data with seats
             const coaches = Array.from({ length: numCoaches }, (_, coachIndex) => ({
@@ -91,7 +91,7 @@ export default {
                     status: 'available'
                 }))
             }));
-            
+
             const scheduleData = {
                 trainNumber: trainNumber.value,
                 departure: departure.value,
