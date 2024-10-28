@@ -33,19 +33,23 @@ export const useSeatStore = defineStore('seat', {
             if (trainDoc.exists()) {
                 const coaches = trainDoc.data().coaches;
 
-                // coaches[coachIndex][seatNumber - 1].status = newStatus; // Assuming seats are indexed
-                // await updateDoc(trainRef, { coaches });
+                // Ensure coachIndex is valid
+                if (coachIndex < 0 || coachIndex >= coaches.length) {
+                    console.error("Invalid coach index:", coachIndex);
+                    return;
+                }
 
                 const seat = coaches[coachIndex].seats.find(seat => seat.seatNumber === seatNumber);
                 if (seat) {
-                    seat.status = newStatus; // Update the seat status
+                    seat.status = newStatus;
                     await updateDoc(trainRef, { coaches });
                 } else {
-                    console.error("Seat not found:", seatNumber);
+                    console.error("Seat not found in coach:", seatNumber);
                 }
             } else {
                 console.error("Train document does not exist");
             }
-        },
+        }
+
     }
 });

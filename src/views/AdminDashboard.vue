@@ -18,10 +18,10 @@
       <BookingOverview />
     </section>
 
-    <section>
+    <!-- <section>
       <h2>User Management</h2>
       <UserManagement />
-    </section>
+    </section> -->
   </div>
 </template>
 
