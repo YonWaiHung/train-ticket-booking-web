@@ -10,6 +10,7 @@ export const sendEmailWithQRCode = async (email, content) => {
             email,
             subject: 'Booking Confirmation',
             body: content,
+            qrCode: qrCodeDataUrl
         });
         
         console.log('Email sent with QR code');

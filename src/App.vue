@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isLoggedIn">
     <header>
-      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+      <img alt="Train logo" class="logo" src="@/assets/train-icon.png" width="125" height="125" />
       <h1>Welcome To The Train App!</h1>
     </header>
     <!-- login -->

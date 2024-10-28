@@ -16,6 +16,7 @@
 <script>
 import axios from 'axios';
 import QRCode from 'qrcode';
+import { getAuth } from "firebase/auth";
 
 export default {
     props: {
@@ -26,7 +27,15 @@ export default {
     },
     methods: {
         async confirmPayment() {
-            const email = "user@example.com"; // Replace this with the actual user's email from your state or Firestore
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+
+            if (!currentUser) {
+                alert("Please log in to confirm your booking.");
+                return;
+            }
+
+            const email = currentUser.email;
 
             // Prepare the email content
             const emailContent = `
@@ -43,10 +52,11 @@ export default {
 
             try {
                 const qrCodeDataUrl = await QRCode.toDataURL(emailContent);
-
+                console.log('Generated QR Code Data URL:', qrCodeDataUrl);
+                console.log('Content:', emailContent);
                 await axios.post('http://localhost:3000/api/sendEmail', {
                     email,
-                    subject: 'Booking Confirmation',
+                    subject: 'Train Booking Confirmation',
                     body: emailContent,
                     qrCode: qrCodeDataUrl
                 });

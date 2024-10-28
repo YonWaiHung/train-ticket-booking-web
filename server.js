@@ -17,25 +17,27 @@ app.use(express.json()); // Use Express's built-in JSON parser
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER, // Use environment variable
-        pass: process.env.EMAIL_PASS,   // Use environment variable
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,   
     },
 });
 
 // API endpoint to send email
 app.post('/api/sendEmail', async (req, res) => {
-    const { email, subject, body } = req.body;
+    const { email, subject, body, qrCode } = req.body;
 
     console.log('Email:', email);
     console.log('Subject:', subject);
     console.log('Body:', body); 
+    console.log('QR Code Data URL:', qrCode);
 
     try {
-        if (!body || typeof body !== 'string') {
-            return res.status(400).send('Invalid body for QR code');
+        const qrCodePattern = /^data:image\/(png|jpeg);base64,[A-Za-z0-9+/=]+$/;
+        if (!qrCode || !qrCodePattern.test(qrCode)) {
+            return res.status(400).send('Invalid QR code');
         }
 
-        const qrCodeDataUrl = await QRCode.toDataURL(body);
+        // const qrCodeDataUrl = await QRCode.toDataURL(body);
 
         const mailOptions = {
             from: process.env.EMAIL_USER, // Use environment variable
@@ -43,9 +45,9 @@ app.post('/api/sendEmail', async (req, res) => {
             subject: subject,
             html: `
                 <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-                    <h3>Booking Confirmation</h3>
+                    <h3>Train Booking Confirmation</h3>
                     <p>${body}</p>
-                    <img src="${qrCodeDataUrl}" alt="QR Code" style="width: 200px; height: auto;"/>
+                    <img src="${qrCode}" alt="Booking Summary QR Code" style="width: 200px; height: auto;"/>
                 </div>
             `,
         };
