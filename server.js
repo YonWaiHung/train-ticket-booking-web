@@ -1,9 +1,11 @@
-const express = require('express');
-const nodemailer = require('nodemailer');
-const QRCode = require('qrcode');
-const cors = require('cors');
-require('dotenv').config(); // Load environment variables from .env file
+import express from 'express';
+import nodemailer from 'nodemailer';
+import QRCode from 'qrcode';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -24,7 +26,15 @@ const transporter = nodemailer.createTransport({
 app.post('/api/sendEmail', async (req, res) => {
     const { email, subject, body } = req.body;
 
+    console.log('Email:', email);
+    console.log('Subject:', subject);
+    console.log('Body:', body); 
+
     try {
+        if (!body || typeof body !== 'string') {
+            return res.status(400).send('Invalid body for QR code');
+        }
+
         const qrCodeDataUrl = await QRCode.toDataURL(body);
 
         const mailOptions = {

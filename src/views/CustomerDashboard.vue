@@ -8,10 +8,10 @@
             <TrainBookingForm />
         </section>
 
-        <section>
+        <!-- <section>
             <h2>Your Booking History</h2>
             <BookingHistory :userId="userId" />
-        </section>
+        </section> -->
     </div>
 </template>
 
